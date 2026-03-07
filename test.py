@@ -1,10 +1,7 @@
 import streamlit as st
 import pandas as pd
-import json
-import os
-
-
-DATA_FILE = "sales_data.json"
+import gspread
+from google.oauth2.service_account import Credentials
 
 
 EMPLOYEES = [
@@ -25,29 +22,90 @@ PRODUCTS = [
 ]
 
 
-def create_empty_data():
-    return {
-        emp: {prod: 0 for prod in PRODUCTS}
-        for emp in EMPLOYEES
-    }
+SHEET_NAME = "sales_competition"
+WORKSHEET = "data"
 
+
+# -----------------------
+# подключение к Google Sheets
+# -----------------------
+
+@st.cache_resource
+def connect_sheet():
+
+    scope = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
+
+    creds = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes=scope
+    )
+
+    client = gspread.authorize(creds)
+
+    sheet = client.open(SHEET_NAME).worksheet(WORKSHEET)
+
+    return sheet
+
+
+# -----------------------
+# загрузка данных
+# -----------------------
 
 def load_data():
-    if os.path.exists(DATA_FILE):
-        with open(DATA_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    return create_empty_data()
+
+    sheet = connect_sheet()
+
+    data = sheet.get_all_records()
+
+    if not data:
+        return pd.DataFrame(columns=["employee", "product", "value"])
+
+    return pd.DataFrame(data)
 
 
-def save_data(data):
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
+# -----------------------
+# обновление значения
+# -----------------------
+
+def update_value(employee, product, value, operation):
+
+    sheet = connect_sheet()
+
+    data = load_data()
+
+    row = data[
+        (data["employee"] == employee) &
+        (data["product"] == product)
+    ]
+
+    if row.empty:
+
+        new_value = value if operation == "+" else -value
+
+        sheet.append_row([employee, product, new_value])
+
+    else:
+
+        index = row.index[0]
+
+        current = row.iloc[0]["value"]
+
+        if operation == "+":
+            new_value = current + value
+        else:
+            new_value = current - value
+
+        cell_row = index + 2
+
+        sheet.update_cell(cell_row, 3, new_value)
 
 
-def init_data():
-    if "sales_data" not in st.session_state:
-        st.session_state.sales_data = load_data()
-
+# -----------------------
+# ввод данных
+# -----------------------
 
 def input_section():
 
@@ -58,20 +116,18 @@ def input_section():
         EMPLOYEES
     )
 
-    st.subheader(f"Продажи сотрудника: {employee}")
-
     entries = {}
 
     for product in PRODUCTS:
 
-        col1, col2, col3 = st.columns([3, 1, 1])
+        col1, col2 = st.columns([3, 1])
 
         with col1:
             value = st.number_input(
                 product,
                 min_value=0,
                 step=1,
-                key=f"value_{employee}_{product}"
+                key=f"value_{product}"
             )
 
         with col2:
@@ -79,7 +135,7 @@ def input_section():
                 "Операция",
                 ["+", "-"],
                 horizontal=True,
-                key=f"op_{employee}_{product}"
+                key=f"op_{product}"
             )
 
         entries[product] = (value, operation)
@@ -90,19 +146,26 @@ def input_section():
 
             if value > 0:
 
-                if operation == "+":
-                    st.session_state.sales_data[employee][product] += value
-                else:
-                    st.session_state.sales_data[employee][product] -= value
+                update_value(employee, product, value, operation)
 
-        save_data(st.session_state.sales_data)
+        st.success("Данные обновлены")
 
-        st.success("Данные обновлены и сохранены")
+        st.rerun()
 
+
+# -----------------------
+# рейтинг
+# -----------------------
 
 def leaderboard():
 
     st.header("Рейтинг")
+
+    df = load_data()
+
+    if df.empty:
+        st.info("Пока нет данных")
+        return
 
     tabs = st.tabs(PRODUCTS)
 
@@ -110,31 +173,41 @@ def leaderboard():
 
         with tabs[i]:
 
+            product_df = df[df["product"] == product]
+
             ranking = []
 
             for emp in EMPLOYEES:
 
-                score = st.session_state.sales_data[emp][product]
+                row = product_df[
+                    product_df["employee"] == emp
+                ]
+
+                value = row["value"].sum() if not row.empty else 0
 
                 ranking.append({
                     "Сотрудник": emp,
-                    "Продажи": score
+                    "Продажи": value
                 })
 
-            df = pd.DataFrame(ranking)
+            ranking_df = pd.DataFrame(ranking)
 
-            df = df.sort_values(
+            ranking_df = ranking_df.sort_values(
                 by="Продажи",
                 ascending=False
             ).reset_index(drop=True)
 
-            df.index += 1
+            ranking_df.index += 1
 
             st.dataframe(
-                df,
+                ranking_df,
                 use_container_width=True
             )
 
+
+# -----------------------
+# main
+# -----------------------
 
 def main():
 
@@ -145,8 +218,6 @@ def main():
 
     st.title("🏆 Конкурс продаж")
 
-    init_data()
-
     input_section()
 
     st.divider()
@@ -154,5 +225,6 @@ def main():
     leaderboard()
 
 
-if __name__ == "__main__":
+if name == "__main__":
     main()
+    
