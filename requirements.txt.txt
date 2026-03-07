@@ -1,4 +1,6 @@
+req11"}
 streamlit>=1.30
 pandas>=2.0
 gspread>=6.0
 google-auth>=2.0
+
