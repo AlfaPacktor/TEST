@@ -98,7 +98,7 @@ padding:40px;
 background:white;
 border-radius:20px;
 box-shadow:0 0 25px rgba(0,0,0,0.3);
-animation:pop 1s ease;
+animation:pop 2s ease;
 }
 
 @keyframes pop{
