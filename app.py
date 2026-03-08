@@ -154,7 +154,7 @@ for i,(q,answer) in enumerate(questions):
 
             if user.lower() == answer:
 
-                st.success("Правильно!")
+                st.success("Умничка!")
 
                 if st.session_state.step == i:
                     st.session_state.step += 1
@@ -165,7 +165,6 @@ for i,(q,answer) in enumerate(questions):
 
         st.markdown('</div>', unsafe_allow_html=True)
 
-# ------------------- Финальный блок -------------------
 # ------------------- Финальный блок -------------------
 if st.session_state.step == 7:
 
