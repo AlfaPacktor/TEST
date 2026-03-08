@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.set_page_config(page_title="Поздравительная игра")
+st.set_page_config(page_title="Поздравительный квест")
 
 st.markdown("""
 <style>
@@ -11,69 +11,106 @@ html, body, [class*="css"]  {
     font-family: 'Lobster', cursive;
 }
 
+/* фон */
+
+body{
+background: linear-gradient(135deg,#ffd1dc,#d1ffd6,#d1e0ff);
+overflow-x:hidden;
+}
+
 /* бронзовый текст */
-.bronze {
-    color:#cd7f32;
-    font-size:22px;
+
+h1,h2,h3{
+color:#cd7f32;
+text-align:center;
 }
 
 /* блоки */
+
 .block{
-    background:white;
-    padding:20px;
-    border-radius:15px;
-    margin-bottom:20px;
+background:white;
+padding:20px;
+border-radius:15px;
+margin-bottom:20px;
+box-shadow:0 0 15px rgba(0,0,0,0.2);
 }
 
 /* поле ввода */
-input{
-    border:2px solid red !important;
+
+div.stTextInput > div > div > input{
+border:1px solid green;
+border-radius:6px;
 }
 
-/* фон */
-body{
-    background:linear-gradient(120deg,#ffd1dc,#ffe4b5,#fffacd,#e0ffff);
-}
-
-/* анимированные шарики */
+/* шарики */
 
 .balloon{
-    position:fixed;
-    bottom:-150px;
-    width:60px;
-    height:80px;
-    border-radius:50%;
-    opacity:0.7;
-    animation:float 15s infinite;
+position:fixed;
+bottom:-150px;
+width:40px;
+height:50px;
+background:red;
+border-radius:50%;
+animation:float 12s infinite ease-in;
+opacity:0.6;
 }
+
+.balloon:after{
+content:"";
+position:absolute;
+width:2px;
+height:40px;
+background:#555;
+top:50px;
+left:19px;
+}
+
+.balloon:nth-child(1){left:10%;background:#ff6b6b;animation-duration:10s;}
+.balloon:nth-child(2){left:30%;background:#ffd93d;animation-duration:12s;}
+.balloon:nth-child(3){left:50%;background:#6bcB77;animation-duration:14s;}
+.balloon:nth-child(4){left:70%;background:#4d96ff;animation-duration:11s;}
+.balloon:nth-child(5){left:90%;background:#ff9f1c;animation-duration:13s;}
 
 @keyframes float{
-    0%{
-        transform:translateY(0);
-    }
-    100%{
-        transform:translateY(-120vh);
-    }
+0%{transform:translateY(0)}
+100%{transform:translateY(-120vh)}
 }
 
-.balloon:nth-child(1){left:10%;background:red;animation-duration:12s;}
-.balloon:nth-child(2){left:20%;background:blue;animation-duration:18s;}
-.balloon:nth-child(3){left:40%;background:green;animation-duration:14s;}
-.balloon:nth-child(4){left:60%;background:orange;animation-duration:16s;}
-.balloon:nth-child(5){left:80%;background:purple;animation-duration:20s;}
+/* цветочки */
+
+.flower{
+position:fixed;
+top:-50px;
+font-size:25px;
+animation:fall 10s linear infinite;
+}
+
+.flower:nth-child(6){left:15%;}
+.flower:nth-child(7){left:35%;}
+.flower:nth-child(8){left:55%;}
+.flower:nth-child(9){left:75%;}
+.flower:nth-child(10){left:90%;}
+
+@keyframes fall{
+0%{transform:translateY(-50px)}
+100%{transform:translateY(110vh)}
+}
 
 /* подарок */
 
 .gift{
-    font-size:120px;
-    text-align:center;
-    animation:bounce 1.5s infinite;
+text-align:center;
+font-size:35px;
+padding:40px;
+background:white;
+border-radius:20px;
+box-shadow:0 0 25px rgba(0,0,0,0.3);
+animation:pop 1s ease;
 }
 
-@keyframes bounce{
-    0%{transform:translateY(0)}
-    50%{transform:translateY(-20px)}
-    100%{transform:translateY(0)}
+@keyframes pop{
+0%{transform:scale(0)}
+100%{transform:scale(1)}
 }
 
 </style>
@@ -84,50 +121,49 @@ body{
 <div class="balloon"></div>
 <div class="balloon"></div>
 
-""", unsafe_allow_html=True)
+<div class="flower">🌸</div>
+<div class="flower">🌼</div>
+<div class="flower">🌸</div>
+<div class="flower">🌼</div>
+<div class="flower">🌸</div>
 
+""", unsafe_allow_html=True)
 
 st.title("Добро пожаловать в игру 🎈")
 
-passwords = [
-    "Первый",
-    "пароль",
-    "всегда",
-    "нужен",
-    "только",
-    "для",
-    "теста"
+questions = [
+("Это твой вопрос и ты должна на него ответить","первый"),
+("Кто едет","пароль"),
+("Где рыба","всегда"),
+("Как прыгать","нужен"),
+("Когда быть","только"),
+("Куда лететь","для"),
+("За кем бежать","теста")
 ]
 
 if "step" not in st.session_state:
-    st.session_state.step = 1
+    st.session_state.step = 0
 
 
-for i in range(1,8):
+for i,(q,answer) in enumerate(questions):
 
     if st.session_state.step >= i:
 
         st.markdown('<div class="block">', unsafe_allow_html=True)
 
-        st.markdown(
-            '<p class="bronze">Это твой вопрос и ты должна на него ответить</p>',
-            unsafe_allow_html=True
-        )
+        st.subheader(f"{i+1}. {q}")
 
-        answer = st.text_input(
-            "Введите пароль",
-            key=f"input{i}",
-            type="password"
-        )
+        user = st.text_input("Введите пароль", key=f"input{i}")
 
         if st.button("Вперед", key=f"btn{i}"):
 
-            if answer == passwords[i-1]:
+            if user.lower() == answer:
 
-                st.success("Правильно! 🎉")
+                st.success("Правильно!")
 
                 if st.session_state.step == i:
                     st.session_state.step += 1
+                    st.rerun()
 
             else:
                 st.error("Неверный пароль")
@@ -135,13 +171,13 @@ for i in range(1,8):
         st.markdown('</div>', unsafe_allow_html=True)
 
 
-if st.session_state.step == 8:
+if st.session_state.step == 7:
 
     st.balloons()
 
-    st.markdown(
-        '<div class="gift">🎁</div>',
-        unsafe_allow_html=True
-    )
-
-    st.success("🎉 Поздравляю! Ты прошла весь квест! 🎉")
+    st.markdown("""
+    <div class="gift">
+    🎁 Поздравляю! Ты прошла квест! <br><br>
+    Твой подарок — <b>Шкаф</b> 🎉
+    </div>
+    """, unsafe_allow_html=True)
