@@ -1,154 +1,73 @@
-from flask import Flask, render_template_string
+import streamlit as st
 
-app = Flask(__name__)
+st.set_page_config(page_title="Поздравительная игра")
 
-HTML_PAGE = """
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<title>Поздравительная игра</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
-
+st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 
-body{
+html, body, [class*="css"]  {
     font-family: 'Lobster', cursive;
-    text-align:center;
-    background: linear-gradient(135deg,#ffb3ba,#ffdfba,#ffffba,#baffc9,#bae1ff);
-    background-size: cover;
 }
 
-.container{
-    width:600px;
-    margin:auto;
-}
-
-.block{
-    margin:25px;
+.block {
+    border-radius:15px;
     padding:20px;
+    margin-bottom:20px;
     background:white;
-    border-radius:15px;
-    box-shadow:0 0 10px rgba(0,0,0,0.2);
 }
 
-.hidden{
-    display:none;
+input {
+    border:2px solid red !important;
 }
 
-input{
-    padding:10px;
-    border:2px solid red;
-    border-radius:8px;
-    font-size:16px;
-}
-
-button{
-    padding:10px 20px;
-    margin-left:10px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:16px;
-}
-
-.text{
-    margin-top:15px;
+.bronze {
     color:#cd7f32;
-    font-size:20px;
+    font-size:22px;
 }
-
-h1{
-    color:#cd7f32;
-}
-
-#final{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.7);
-    display:none;
-    align-items:center;
-    justify-content:center;
-}
-
-#final div{
-    background:white;
-    padding:40px;
-    border-radius:15px;
-    font-size:28px;
-    color:#cd7f32;
-}
-
 </style>
+""", unsafe_allow_html=True)
 
-<script>
 
-function checkPassword(blockNumber){
+st.title("Добро пожаловать в игру 🎈")
 
-    let input = document.getElementById("input"+blockNumber).value;
 
-    if(input == blockNumber){
+if "step" not in st.session_state:
+    st.session_state.step = 1
 
-        document.getElementById("text"+blockNumber).style.display="block";
 
-        if(blockNumber < 7){
-            document.getElementById("block"+(blockNumber+1)).style.display="block";
-        } else{
-            document.getElementById("final").style.display="flex";
-        }
+for i in range(1,8):
 
-    }else{
-        alert("Неверный пароль!");
-    }
-}
+    if st.session_state.step >= i:
 
-</script>
+        st.markdown('<div class="block">', unsafe_allow_html=True)
 
-</head>
+        st.markdown(
+            '<p class="bronze">Это твой вопрос и ты должна на него ответить</p>',
+            unsafe_allow_html=True
+        )
 
-<body>
+        answer = st.text_input(
+            "Введите пароль",
+            key=f"input{i}",
+            type="password"
+        )
 
-<h1>Добро пожаловать в игру</h1>
+        if st.button("Вперед", key=f"btn{i}"):
 
-<div class="container">
+            if answer == str(i):
 
-{% for i in range(1,8) %}
+                st.success("Правильно! 🎉")
 
-<div class="block" id="block{{i}}" {% if i>1 %}style="display:none"{% endif %}>
+                if st.session_state.step == i:
+                    st.session_state.step += 1
 
-<p>Это твой вопрос и ты должна на него ответить</p>
+            else:
+                st.error("Неверный пароль")
 
-<input id="input{{i}}" type="password" placeholder="Введите пароль">
+        st.markdown('</div>', unsafe_allow_html=True)
 
-<button onclick="checkPassword({{i}})">Вперед</button>
 
-<div class="text hidden" id="text{{i}}">
-Правильно! Переходим дальше 🎉
-</div>
-
-</div>
-
-{% endfor %}
-
-</div>
-
-<div id="final">
-<div>
-🎉 Поздравляю! Ты прошла весь квест! 🎉
-</div>
-</div>
-
-</body>
-</html>
-"""
-
-@app.route("/")
-def index():
-    return render_template_string(HTML_PAGE)
-
-if name == "__main__":
-    app.run(debug=True)
+if st.session_state.step == 8:
+    st.balloons()
+    st.success("🎉 Поздравляю! Ты прошла весь квест! 🎉")
