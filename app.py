@@ -172,7 +172,7 @@ if st.session_state.step == 7:
 
     if not st.session_state.gift_opened:
 
-        if st.button("🎁 Открыть подарок"):
+        if st.button("🎁 Открыть подарок 🎁"):
 
             st.session_state.gift_opened = True
             st.balloons()
