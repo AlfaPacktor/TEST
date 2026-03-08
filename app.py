@@ -2,6 +2,7 @@ import streamlit as st
 
 st.set_page_config(page_title="Поздравительный квест")
 
+# ------------------- Стили -------------------
 st.markdown("""
 <style>
 
@@ -12,21 +13,18 @@ html, body, [class*="css"]  {
 }
 
 /* фон */
-
 body{
 background: linear-gradient(135deg,#ffd1dc,#d1ffd6,#d1e0ff);
 overflow-x:hidden;
 }
 
 /* бронзовый текст */
-
 h1,h2,h3{
 color:#cd7f32;
 text-align:center;
 }
 
 /* блоки */
-
 .block{
 background:white;
 padding:20px;
@@ -36,20 +34,17 @@ box-shadow:0 0 15px rgba(0,0,0,0.2);
 }
 
 /* поле ввода */
-
 div.stTextInput > div > div > input{
 border:1px solid green;
 border-radius:6px;
 }
 
 /* шарики */
-
 .balloon{
 position:fixed;
 bottom:-150px;
 width:40px;
 height:50px;
-background:red;
 border-radius:50%;
 animation:float 12s infinite ease-in;
 opacity:0.6;
@@ -77,7 +72,6 @@ left:19px;
 }
 
 /* цветочки */
-
 .flower{
 position:fixed;
 top:-50px;
@@ -97,7 +91,6 @@ animation:fall 10s linear infinite;
 }
 
 /* подарок */
-
 .gift{
 text-align:center;
 font-size:35px;
@@ -129,6 +122,7 @@ animation:pop 1s ease;
 
 """, unsafe_allow_html=True)
 
+# ------------------- Логика квеста -------------------
 st.title("Добро пожаловать в игру 🎈")
 
 questions = [
@@ -143,7 +137,8 @@ questions = [
 
 if "step" not in st.session_state:
     st.session_state.step = 0
-
+if "gift_opened" not in st.session_state:
+    st.session_state.gift_opened = False
 
 for i,(q,answer) in enumerate(questions):
 
@@ -170,14 +165,23 @@ for i,(q,answer) in enumerate(questions):
 
         st.markdown('</div>', unsafe_allow_html=True)
 
-
+# ------------------- Финальный блок -------------------
 if st.session_state.step == 7:
 
-    st.balloons()
+    st.markdown("<h2 style='text-align:center'>Ты прошла все испытания!</h2>", unsafe_allow_html=True)
 
-    st.markdown("""
-    <div class="gift">
-    🎁 Поздравляю! Ты прошла квест! <br><br>
-    Твой подарок — <b>Шкаф</b> 🎉
-    </div>
-    """, unsafe_allow_html=True)
+    if not st.session_state.gift_opened:
+
+        if st.button("🎁 Открыть подарок"):
+
+            st.session_state.gift_opened = True
+            st.balloons()
+            st.experimental_rerun()
+
+    else:
+        st.markdown("""
+        <div class="gift">
+        🎁 Поздравляю! Ты прошла квест! <br><br>
+        Твой подарок — <b>Шкаф</b> 🎉
+        </div>
+        """, unsafe_allow_html=True)
