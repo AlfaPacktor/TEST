@@ -174,7 +174,7 @@ if st.session_state.step == 7:
     # Показываем кнопку, если подарок ещё не открыт
     if not st.session_state.get("gift_opened", False):
 
-        if st.button("🎁 Открыть подарок"):
+        if st.button("🎁 Открыть подарок 🎁"):
             st.session_state.gift_opened = True
 
     # Если подарок открыт, показываем подарок и запускаем конфетти
