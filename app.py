@@ -1,229 +1,154 @@
-import streamlit as st
-import pandas as pd
-import gspread
-from google.oauth2.service_account import Credentials
+from flask import Flask, render_template_string
+
+app = Flask(__name__)
+
+HTML_PAGE = """
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Поздравительная игра</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+    font-family: 'Lobster', cursive;
+    text-align:center;
+    background: linear-gradient(135deg,#ffb3ba,#ffdfba,#ffffba,#baffc9,#bae1ff);
+    background-size: cover;
+}
+
+.container{
+    width:600px;
+    margin:auto;
+}
 
-EMPLOYEES = [
-    "Константинов Я.",
-    "Михно Д.",
-    "Ласковая А.",
-    "Фельдман Л.",
-    "Орлик Л.",
-    "Шевчак В.",
-    "Колесникова А.",
-    "Шувалов И.",
-    "Шабунина Д."
-]
+.block{
+    margin:25px;
+    padding:20px;
+    background:white;
+    border-radius:15px;
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
 
-PRODUCTS = [
-    "Кредит Наличными",
-    "Коробочное Страхование"
-]
+.hidden{
+    display:none;
+}
 
+input{
+    padding:10px;
+    border:2px solid red;
+    border-radius:8px;
+    font-size:16px;
+}
 
-SHEET_NAME = "sales_competition"
-WORKSHEET = "data"
+button{
+    padding:10px 20px;
+    margin-left:10px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+}
 
+.text{
+    margin-top:15px;
+    color:#cd7f32;
+    font-size:20px;
+}
 
-# -----------------------
-# подключение к Google Sheets
-# -----------------------
+h1{
+    color:#cd7f32;
+}
 
-@st.cache_resource
-def connect_sheet():
+#final{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+    display:none;
+    align-items:center;
+    justify-content:center;
+}
 
-    scope = [
-        "https://www.googleapis.com/auth/spreadsheets",
-        "https://www.googleapis.com/auth/drive"
-    ]
+#final div{
+    background:white;
+    padding:40px;
+    border-radius:15px;
+    font-size:28px;
+    color:#cd7f32;
+}
 
-    creds = Credentials.from_service_account_info(
-        st.secrets["gcp_service_account"],
-        scopes=scope
-    )
+</style>
 
-    client = gspread.authorize(creds)
+<script>
 
-    sheet = client.open(SHEET_NAME).worksheet(WORKSHEET)
+function checkPassword(blockNumber){
 
-    return sheet
+    let input = document.getElementById("input"+blockNumber).value;
 
+    if(input == blockNumber){
 
-# -----------------------
-# загрузка данных
-# -----------------------
+        document.getElementById("text"+blockNumber).style.display="block";
 
-def load_data():
+        if(blockNumber < 7){
+            document.getElementById("block"+(blockNumber+1)).style.display="block";
+        } else{
+            document.getElementById("final").style.display="flex";
+        }
 
-    sheet = connect_sheet()
+    }else{
+        alert("Неверный пароль!");
+    }
+}
 
-    data = sheet.get_all_records()
+</script>
 
-    if not data:
-        return pd.DataFrame(columns=["employee", "product", "value"])
+</head>
 
-    return pd.DataFrame(data)
+<body>
 
+<h1>Добро пожаловать в игру</h1>
 
-# -----------------------
-# обновление значения
-# -----------------------
+<div class="container">
 
-def update_value(employee, product, value, operation):
+{% for i in range(1,8) %}
 
-    sheet = connect_sheet()
+<div class="block" id="block{{i}}" {% if i>1 %}style="display:none"{% endif %}>
 
-    data = load_data()
+<p>Это твой вопрос и ты должна на него ответить</p>
 
-    row = data[
-        (data["employee"] == employee) &
-        (data["product"] == product)
-    ]
+<input id="input{{i}}" type="password" placeholder="Введите пароль">
 
-    if row.empty:
+<button onclick="checkPassword({{i}})">Вперед</button>
 
-        new_value = value if operation == "+" else -value
+<div class="text hidden" id="text{{i}}">
+Правильно! Переходим дальше 🎉
+</div>
 
-        sheet.append_row([employee, product, new_value])
+</div>
 
-    else:
+{% endfor %}
 
-        index = row.index[0]
+</div>
 
-        current = row.iloc[0]["value"]
+<div id="final">
+<div>
+🎉 Поздравляю! Ты прошла весь квест! 🎉
+</div>
+</div>
 
-        if operation == "+":
-            new_value = current + value
-        else:
-            new_value = current - value
+</body>
+</html>
+"""
 
-        cell_row = index + 2
-
-        sheet.update_cell(cell_row, 3, new_value)
-
-
-# -----------------------
-# ввод данных
-# -----------------------
-
-def input_section():
-
-    st.header("Ввод данных")
-
-    employee = st.selectbox(
-        "Выберите сотрудника",
-        EMPLOYEES
-    )
-
-    entries = {}
-
-    for product in PRODUCTS:
-
-        col1, col2 = st.columns([3, 1])
-
-        with col1:
-            value = st.number_input(
-                product,
-                min_value=0,
-                step=1,
-                key=f"value_{product}"
-            )
-
-        with col2:
-            operation = st.radio(
-                "Операция",
-                ["+", "-"],
-                horizontal=True,
-                key=f"op_{product}"
-            )
-
-        entries[product] = (value, operation)
-
-    if st.button("Принять данные"):
-
-        for product, (value, operation) in entries.items():
-
-            if value > 0:
-
-                update_value(employee, product, value, operation)
-
-        st.success("Данные обновлены")
-
-        st.rerun()
-
-
-# -----------------------
-# рейтинг
-# -----------------------
-
-def leaderboard():
-
-    st.header("Рейтинг")
-
-    df = load_data()
-
-    if df.empty:
-        st.info("Пока нет данных")
-        return
-
-    tabs = st.tabs(PRODUCTS)
-
-    for i, product in enumerate(PRODUCTS):
-
-        with tabs[i]:
-
-            product_df = df[df["product"] == product]
-
-            ranking = []
-
-            for emp in EMPLOYEES:
-
-                row = product_df[
-                    product_df["employee"] == emp
-                ]
-
-                value = row["value"].sum() if not row.empty else 0
-
-                ranking.append({
-                    "Сотрудник": emp,
-                    "Продажи": value
-                })
-
-            ranking_df = pd.DataFrame(ranking)
-
-            ranking_df = ranking_df.sort_values(
-                by="Продажи",
-                ascending=False
-            ).reset_index(drop=True)
-
-            ranking_df.index += 1
-
-            st.dataframe(
-                ranking_df,
-                use_container_width=True
-            )
-
-
-# -----------------------
-# main
-# -----------------------
-
-def main():
-
-    st.set_page_config(
-        page_title="Конкурс продаж",
-        layout="wide"
-    )
-
-    st.title("🏆 Конкурс продаж")
-
-    input_section()
-
-    st.divider()
-
-    leaderboard()
-
+@app.route("/")
+def index():
+    return render_template_string(HTML_PAGE)
 
 if name == "__main__":
-    main()
-    
+    app.run(debug=True)
