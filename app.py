@@ -166,19 +166,20 @@ for i,(q,answer) in enumerate(questions):
         st.markdown('</div>', unsafe_allow_html=True)
 
 # ------------------- Финальный блок -------------------
+# ------------------- Финальный блок -------------------
 if st.session_state.step == 7:
 
     st.markdown("<h2 style='text-align:center'>Ты прошла все испытания!</h2>", unsafe_allow_html=True)
 
-    if not st.session_state.gift_opened:
+    # Показываем кнопку, если подарок ещё не открыт
+    if not st.session_state.get("gift_opened", False):
 
-        if st.button("🎁 Открыть подарок 🎁"):
-
+        if st.button("🎁 Открыть подарок"):
             st.session_state.gift_opened = True
-            st.balloons()
-            st.experimental_rerun()
 
-    else:
+    # Если подарок открыт, показываем подарок и запускаем конфетти
+    if st.session_state.get("gift_opened", False):
+        st.balloons()
         st.markdown("""
         <div class="gift">
         🎁 Поздравляю! Ты прошла квест! <br><br>
