@@ -1,15 +1,15 @@
 import streamlit as st
-# безопасный импорт
+
+# ------------------- Безопасный импорт -------------------
 try:
     from streamlit_extras.let_it_rain import rain
     rain_available = True
-except:
+except ImportError:
     rain_available = False
 
 st.set_page_config(page_title="Поздравительный квест")
 
-
-# запуск цветов
+# ------------------- Цветочный дождь -------------------
 if rain_available:
     rain(
         emoji="🌸",
@@ -19,10 +19,8 @@ if rain_available:
     )
 
 # ------------------- Стили -------------------
-
 st.markdown("""
 <style>
-
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 
 html, body, [class*="css"]  {
@@ -35,14 +33,12 @@ overflow-x:hidden;
 }
 
 /* текст */
-
 h1,h2,h3{
 color:#cd7f32;
 text-align:center;
 }
 
 /* блоки */
-
 .block{
 background:white;
 padding:20px;
@@ -52,14 +48,12 @@ box-shadow:0 0 15px rgba(0,0,0,0.2);
 }
 
 /* поле ввода */
-
 div.stTextInput > div > div > input{
 border:1px solid green;
 border-radius:6px;
 }
 
 /* шарики */
-
 .balloon{
 position:fixed;
 bottom:-150px;
@@ -69,7 +63,6 @@ border-radius:50%;
 animation:float 12s infinite ease-in;
 opacity:0.6;
 }
-
 .balloon:after{
 content:"";
 position:absolute;
@@ -79,7 +72,6 @@ background:#555;
 top:50px;
 left:19px;
 }
-
 .balloon:nth-child(1){left:10%;background:#ff6b6b;animation-duration:10s;}
 .balloon:nth-child(2){left:30%;background:#ffd93d;animation-duration:12s;}
 .balloon:nth-child(3){left:50%;background:#6bcB77;animation-duration:14s;}
@@ -92,7 +84,6 @@ left:19px;
 }
 
 /* подарок */
-
 .gift{
 text-align:center;
 font-size:35px;
@@ -107,7 +98,6 @@ animation:pop 2s ease;
 0%{transform:scale(0)}
 100%{transform:scale(1)}
 }
-
 </style>
 
 <div class="balloon"></div>
@@ -115,21 +105,19 @@ animation:pop 2s ease;
 <div class="balloon"></div>
 <div class="balloon"></div>
 <div class="balloon"></div>
-
 """, unsafe_allow_html=True)
 
 # ------------------- Логика квеста -------------------
-
 st.title("🎈Добро пожаловать в 🎈игру🎈")
 
 questions = [
-("Это твой вопрос и ты должна на него ответить","первый"),
-("Кто едет","пароль"),
-("Где рыба","всегда"),
-("Как прыгать","нужен"),
-("Когда быть","только"),
-("Куда лететь","для"),
-("За кем бежать","теста")
+    ("Это твой вопрос и ты должна на него ответить","первый"),
+    ("Кто едет","пароль"),
+    ("Где рыба","всегда"),
+    ("Как прыгать","нужен"),
+    ("Когда быть","только"),
+    ("Куда лететь","для"),
+    ("За кем бежать","теста")
 ]
 
 if "step" not in st.session_state:
@@ -138,9 +126,7 @@ if "step" not in st.session_state:
 if "gift_opened" not in st.session_state:
     st.session_state.gift_opened = False
 
-
 for i,(q,answer) in enumerate(questions):
-
     if st.session_state.step >= i:
 
         st.markdown('<div class="block">', unsafe_allow_html=True)
@@ -152,26 +138,22 @@ for i,(q,answer) in enumerate(questions):
         if st.button("Вперед", key=f"btn{i}"):
 
             if user.lower() == answer:
-
                 st.success("Умничка!")
 
                 if st.session_state.step == i:
                     st.session_state.step += 1
                     st.rerun()
-
             else:
                 st.error("Неверный пароль")
 
         st.markdown('</div>', unsafe_allow_html=True)
 
-# ------------------- Финал -------------------
-
+# ------------------- Финальный блок -------------------
 if st.session_state.step == 7:
 
     st.markdown("<h2 style='text-align:center'>Ты прошла все испытания!</h2>", unsafe_allow_html=True)
 
     if not st.session_state.gift_opened:
-
         if st.button("🎁 Открыть и забрать подарок 🎁"):
             st.session_state.gift_opened = True
             st.rerun()
@@ -179,12 +161,13 @@ if st.session_state.step == 7:
     if st.session_state.gift_opened:
 
         # конфетти
-        rain(
-            emoji="🎉",
-            font_size=40,
-            falling_speed=3,
-            animation_length=2
-        )
+        if rain_available:
+            rain(
+                emoji="🎉",
+                font_size=40,
+                falling_speed=3,
+                animation_length=2
+            )
 
         st.balloons()
 
