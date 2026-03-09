@@ -1,7 +1,25 @@
 import streamlit as st
-from streamlit_extras.let_it_rain import rain as st_rain
+import streamlit as st
+
+# безопасный импорт
+try:
+    from streamlit_extras.let_it_rain import rain
+    rain_available = True
+except:
+    rain_available = False
+
 
 st.set_page_config(page_title="Поздравительный квест")
+
+
+# запуск цветов
+if rain_available:
+    rain(
+        emoji="🌸",
+        font_size=28,
+        falling_speed=5,
+        animation_length="infinite"
+    )
 
 # ------------------- Стили -------------------
 
