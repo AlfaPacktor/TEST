@@ -1,8 +1,10 @@
 import streamlit as st
+from streamlit_extras.let_it_rain import rain
 
 st.set_page_config(page_title="Поздравительный квест")
 
 # ------------------- Стили -------------------
+
 st.markdown("""
 <style>
 
@@ -12,19 +14,20 @@ html, body, [class*="css"]  {
     font-family: 'Lobster', cursive;
 }
 
-/* фон */
 body{
 background: linear-gradient(135deg,#ffd1dc,#d1ffd6,#d1e0ff);
 overflow-x:hidden;
 }
 
-/* бронзовый текст */
+/* текст */
+
 h1,h2,h3{
 color:#cd7f32;
 text-align:center;
 }
 
 /* блоки */
+
 .block{
 background:white;
 padding:20px;
@@ -34,12 +37,14 @@ box-shadow:0 0 15px rgba(0,0,0,0.2);
 }
 
 /* поле ввода */
+
 div.stTextInput > div > div > input{
 border:1px solid green;
 border-radius:6px;
 }
 
 /* шарики */
+
 .balloon{
 position:fixed;
 bottom:-150px;
@@ -60,7 +65,7 @@ top:50px;
 left:19px;
 }
 
-.balloon:nth-child(1){left:10%;background:#fc4e3a;animation-duration:20s;}
+.balloon:nth-child(1){left:10%;background:#ff6b6b;animation-duration:10s;}
 .balloon:nth-child(2){left:30%;background:#ffd93d;animation-duration:12s;}
 .balloon:nth-child(3){left:50%;background:#6bcB77;animation-duration:14s;}
 .balloon:nth-child(4){left:70%;background:#4d96ff;animation-duration:11s;}
@@ -71,55 +76,8 @@ left:19px;
 100%{transform:translateY(-120vh)}
 }
 
-/* ------------------- ЦВЕТОЧКИ ------------------- */
-
-.flower{
-position:fixed;
-top:-50px;
-font-size:25px;
-animation-name:fall;
-animation-timing-function:linear;
-animation-iteration-count:infinite;
-}
-
-/* разные позиции, скорость и задержка */
-
-.flower:nth-child(6){
-left:15%;
-animation-duration:9s;
-animation-delay:0s;
-}
-
-.flower:nth-child(7){
-left:35%;
-animation-duration:13s;
-animation-delay:2s;
-}
-
-.flower:nth-child(8){
-left:55%;
-animation-duration:11s;
-animation-delay:4s;
-}
-
-.flower:nth-child(9){
-left:75%;
-animation-duration:15s;
-animation-delay:1s;
-}
-
-.flower:nth-child(10){
-left:90%;
-animation-duration:10s;
-animation-delay:3s;
-}
-
-@keyframes fall{
-0%{transform:translateY(-50px)}
-100%{transform:translateY(110vh)}
-}
-
 /* подарок */
+
 .gift{
 text-align:center;
 font-size:35px;
@@ -143,15 +101,19 @@ animation:pop 2s ease;
 <div class="balloon"></div>
 <div class="balloon"></div>
 
-<div class="flower">🌸</div>
-<div class="flower">🌼</div>
-<div class="flower">🌸</div>
-<div class="flower">🌼</div>
-<div class="flower">🌸</div>
-
 """, unsafe_allow_html=True)
 
+# ------------------- Цветочный дождь -------------------
+
+rain(
+    emoji="🌸",
+    font_size=28,
+    falling_speed=5,
+    animation_length="infinite"
+)
+
 # ------------------- Логика квеста -------------------
+
 st.title("🎈Добро пожаловать в 🎈игру🎈")
 
 questions = [
@@ -166,8 +128,10 @@ questions = [
 
 if "step" not in st.session_state:
     st.session_state.step = 0
+
 if "gift_opened" not in st.session_state:
     st.session_state.gift_opened = False
+
 
 for i,(q,answer) in enumerate(questions):
 
@@ -194,18 +158,30 @@ for i,(q,answer) in enumerate(questions):
 
         st.markdown('</div>', unsafe_allow_html=True)
 
-# ------------------- Финальный блок -------------------
+# ------------------- Финал -------------------
+
 if st.session_state.step == 7:
 
     st.markdown("<h2 style='text-align:center'>Ты прошла все испытания!</h2>", unsafe_allow_html=True)
 
-    if not st.session_state.get("gift_opened", False):
+    if not st.session_state.gift_opened:
 
         if st.button("🎁 Открыть и забрать подарок 🎁"):
             st.session_state.gift_opened = True
+            st.rerun()
 
-    if st.session_state.get("gift_opened", False):
+    if st.session_state.gift_opened:
+
+        # конфетти
+        rain(
+            emoji="🎉",
+            font_size=40,
+            falling_speed=3,
+            animation_length=2
+        )
+
         st.balloons()
+
         st.markdown("""
         <div class="gift">
         🎁 Поздравляю! Ты прошла квест! <br><br>
