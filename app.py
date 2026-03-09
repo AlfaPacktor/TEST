@@ -118,15 +118,6 @@ animation:pop 2s ease;
 
 """, unsafe_allow_html=True)
 
-# ------------------- Цветочный дождь -------------------
-
-rain(
-    emoji="🌸",
-    font_size=28,
-    falling_speed=5,
-    animation_length="infinite"
-)
-
 # ------------------- Логика квеста -------------------
 
 st.title("🎈Добро пожаловать в 🎈игру🎈")
