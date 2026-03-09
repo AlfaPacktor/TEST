@@ -138,7 +138,7 @@ for i,(q,answer) in enumerate(questions):
 # ------------------- Финальный блок -------------------
 if st.session_state.step == 7:
     st.markdown("<h2 style='text-align:center'>Ты прошла все испытания!</h2>", unsafe_allow_html=True)
-    if not st.session_state.gift_opened:
+if not st.session_state.gift_opened:
 
     col1, col2, col3 = st.columns([1,2,1])
 
