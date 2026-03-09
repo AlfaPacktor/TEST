@@ -68,11 +68,12 @@ background:#555;
 top:50px;
 left:19px;
 }
-.balloon:nth-child(1){left:10%;background:#ff6b6b;animation-duration:10s;}
-.balloon:nth-child(2){left:30%;background:#ffd93d;animation-duration:12s;}
-.balloon:nth-child(3){left:50%;background:#6bcB77;animation-duration:14s;}
-.balloon:nth-child(4){left:70%;background:#4d96ff;animation-duration:11s;}
-.balloon:nth-child(5){left:90%;background:#ff9f1c;animation-duration:13s;}
+.balloon:nth-child(1){left:0%;background:#ff6b6b;animation-duration:5s;}
+.balloon:nth-child(2){left:10%;background:#ff6b6b;animation-duration:10s;}
+.balloon:nth-child(3){left:30%;background:#ffd93d;animation-duration:12s;}
+.balloon:nth-child(4){left:50%;background:#6bcB77;animation-duration:14s;}
+.balloon:nth-child(5){left:70%;background:#4d96ff;animation-duration:11s;}
+.balloon:nth-child(6){left:90%;background:#ff9f1c;animation-duration:13s;}
 @keyframes float{
 0%{transform:translateY(0)}
 100%{transform:translateY(-120vh)}
@@ -136,7 +137,7 @@ for i,(q,answer) in enumerate(questions):
 if st.session_state.step == 7:
     st.markdown("<h2 style='text-align:center'>Ты прошла все испытания!</h2>", unsafe_allow_html=True)
     if not st.session_state.gift_opened:
-        if st.button("🎁 Открыть и забрать подарок 🎁"):
+        if st.button("🎁🎁🎁 Открыть и забрать подарок 🎁🎁🎁"):
             st.session_state.gift_opened = True
             st.rerun()
     if st.session_state.gift_opened:
