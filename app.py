@@ -24,12 +24,15 @@ if rain_available:
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
-html, body, [class*="css"]  {
+
+html, body, [class*="css"] {
     font-family: 'Lobster', cursive;
 }
-body{
-background: linear-gradient(135deg,#ffd1dc,#d1ffd6,#d1e0ff);
-overflow-x:hidden;
+
+/* Новый градиентный фон */
+body {
+    background: linear-gradient(to bottom, #ffd1dc, #ff99b6);
+    overflow-x: hidden;
 }
 /* текст */
 h1,h2,h3{
