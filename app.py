@@ -30,12 +30,11 @@ html, body, [class*="css"]  {
     font-family: 'Lobster', cursive;
 }
 
-/* градиентный фон */
-body{
-background: linear-gradient(to bottom, #ffd1dc, #ff99b6);
-overflow-x:hidden;
+/* градиентный фон с !important */
+body {
+    background: linear-gradient(to bottom, #ffd1dc, #ff99b6) !important;
+    overflow-x:hidden;
 }
-
 /* текст */
 h1,h2,h3{
 color:#cd7f32;
