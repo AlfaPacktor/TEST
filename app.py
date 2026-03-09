@@ -1,5 +1,5 @@
 import streamlit as st
-from streamlit_extras.let_it_rain import rain
+from streamlit_extras.let_it_rain import rain as st_rain
 
 st.set_page_config(page_title="Поздравительный квест")
 
