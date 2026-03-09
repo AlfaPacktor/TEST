@@ -71,19 +71,48 @@ left:19px;
 100%{transform:translateY(-120vh)}
 }
 
-/* цветочки */
+/* ------------------- ЦВЕТОЧКИ ------------------- */
+
 .flower{
 position:fixed;
 top:-50px;
 font-size:25px;
-animation:fall 10s linear infinite;
+animation-name:fall;
+animation-timing-function:linear;
+animation-iteration-count:infinite;
 }
 
-.flower:nth-child(6){left:15%;}
-.flower:nth-child(7){left:35%;}
-.flower:nth-child(8){left:55%;}
-.flower:nth-child(9){left:75%;}
-.flower:nth-child(10){left:90%;}
+/* разные позиции, скорость и задержка */
+
+.flower:nth-child(6){
+left:15%;
+animation-duration:9s;
+animation-delay:0s;
+}
+
+.flower:nth-child(7){
+left:35%;
+animation-duration:13s;
+animation-delay:2s;
+}
+
+.flower:nth-child(8){
+left:55%;
+animation-duration:11s;
+animation-delay:4s;
+}
+
+.flower:nth-child(9){
+left:75%;
+animation-duration:15s;
+animation-delay:1s;
+}
+
+.flower:nth-child(10){
+left:90%;
+animation-duration:10s;
+animation-delay:3s;
+}
 
 @keyframes fall{
 0%{transform:translateY(-50px)}
@@ -170,13 +199,11 @@ if st.session_state.step == 7:
 
     st.markdown("<h2 style='text-align:center'>Ты прошла все испытания!</h2>", unsafe_allow_html=True)
 
-    # Показываем кнопку, если подарок ещё не открыт
     if not st.session_state.get("gift_opened", False):
 
         if st.button("🎁 Открыть и забрать подарок 🎁"):
             st.session_state.gift_opened = True
 
-    # Если подарок открыт, показываем подарок и запускаем конфетти
     if st.session_state.get("gift_opened", False):
         st.balloons()
         st.markdown("""
