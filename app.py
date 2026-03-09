@@ -139,7 +139,11 @@ for i,(q,answer) in enumerate(questions):
 if st.session_state.step == 7:
     st.markdown("<h2 style='text-align:center'>Ты прошла все испытания!</h2>", unsafe_allow_html=True)
     if not st.session_state.gift_opened:
-        if st.button("🎁🎁🎁 Открыть и забрать подарок 🎁🎁🎁"):
+
+    col1, col2, col3 = st.columns([1,2,1])
+
+    with col2:
+        if st.button("🎁 Открыть и забрать подарок 🎁"):
             st.session_state.gift_opened = True
             st.rerun()
     if st.session_state.gift_opened:
