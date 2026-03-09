@@ -11,7 +11,6 @@ st.set_page_config(page_title="Поздравительный квест")
 
 # ------------------- Цветочный дождь -------------------
 if rain_available:
-    # создаем "дождь" из 30 цветов с разной скоростью
     import random
     for _ in range(30):
         rain(
@@ -26,15 +25,16 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 
-html, body, [class*="css"]  {
+html, body, [class*="css"] {
     font-family: 'Lobster', cursive;
 }
 
-/* градиентный фон с !important */
+/* градиентный фон */
 body {
     background: linear-gradient(to bottom, #ffd1dc, #ff99b6) !important;
     overflow-x:hidden;
 }
+
 /* текст */
 h1,h2,h3{
 color:#cd7f32;
@@ -85,27 +85,41 @@ left:19px;
 100%{transform:translateY(-120vh)}
 }
 
-/* подарок */
-.gift{
-text-align:center;
-font-size:35px;
-padding:40px;
-background:white;
-border-radius:20px;
-box-shadow:0 0 25px rgba(0,0,0,0.3);
-animation:pop 2s ease;
+/* подарок с крышкой */
+.gift-container{
+position:relative;
+width:200px;
+margin:0 auto;
 }
-@keyframes pop{
-0%{transform:scale(0)}
-100%{transform:scale(1)}
+.gift-box{
+background:#fff;
+border-radius:10px;
+width:200px;
+height:100px;
+position:relative;
+box-shadow:0 0 15px rgba(0,0,0,0.3);
+}
+.gift-lid{
+background:#ffd700;
+width:200px;
+height:30px;
+border-radius:10px 10px 0 0;
+position:absolute;
+top:0;
+left:0;
+transition: transform 1s ease;
+transform-origin: top center;
+}
+.gift-box.open .gift-lid{
+transform: translateY(-80px) rotateX(-45deg);
+}
+/* текст внутри подарка */
+.gift-content{
+text-align:center;
+font-size:20px;
+margin-top:110px;
 }
 </style>
-
-<div class="balloon"></div>
-<div class="balloon"></div>
-<div class="balloon"></div>
-<div class="balloon"></div>
-<div class="balloon"></div>
 """, unsafe_allow_html=True)
 
 # ------------------- Логика квеста -------------------
@@ -145,17 +159,27 @@ for i,(q,answer) in enumerate(questions):
 if st.session_state.step == 7:
     st.markdown("<h2 style='text-align:center'>Ты прошла все испытания!</h2>", unsafe_allow_html=True)
 
-    if not st.session_state.gift_opened:
-
-        col1, col2, col3 = st.columns([1,2,1])
-        with col2:
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        if not st.session_state.gift_opened:
             if st.button("🎁 Открыть и забрать подарок 🎁"):
                 st.session_state.gift_opened = True
                 st.rerun()
+    # контейнер подарка
+    gift_class = "gift-box open" if st.session_state.gift_opened else "gift-box"
+    st.markdown(f"""
+    <div class="gift-container">
+        <div class="{gift_class}">
+            <div class="gift-lid"></div>
+        </div>
+        <div class="gift-content">
+        {"Поздравляю! Твой подарок — Шкаф 🎉" if st.session_state.gift_opened else ""}
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
+    # конфетти и шары при открытии
     if st.session_state.gift_opened:
-
-        # конфетти
         if rain_available:
             rain(
                 emoji="🎉",
@@ -163,12 +187,4 @@ if st.session_state.step == 7:
                 falling_speed=3,
                 animation_length=2
             )
-
         st.balloons()
-
-        st.markdown("""
-        <div class="gift">
-        🎁 Поздравляю! Ты прошла квест! <br><br>
-        Твой подарок — <b>Шкаф</b> 🎉
-        </div>
-        """, unsafe_allow_html=True)
