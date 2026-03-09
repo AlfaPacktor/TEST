@@ -6,7 +6,6 @@ try:
 except:
     rain_available = False
 
-
 st.set_page_config(page_title="Поздравительный квест")
 
 
