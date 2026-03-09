@@ -1,6 +1,4 @@
 import streamlit as st
-import streamlit as st
-
 # безопасный импорт
 try:
     from streamlit_extras.let_it_rain import rain
