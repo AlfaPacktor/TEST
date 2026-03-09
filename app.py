@@ -60,7 +60,7 @@ top:50px;
 left:19px;
 }
 
-.balloon:nth-child(1){left:10%;background:#ff6b6b;animation-duration:10s;}
+.balloon:nth-child(1){left:10%;background:#fc4e3a;animation-duration:10s;}
 .balloon:nth-child(2){left:30%;background:#ffd93d;animation-duration:12s;}
 .balloon:nth-child(3){left:50%;background:#6bcB77;animation-duration:14s;}
 .balloon:nth-child(4){left:70%;background:#4d96ff;animation-duration:11s;}
