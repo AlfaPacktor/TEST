@@ -162,8 +162,8 @@ for i in range(10):
     duration = random.randint(10, 20)
     delay = random.randint(0, 10)
 
-    flowers_html += f'''
-    <div class="flower"
+    flowers_html += f'''
+    <div class="flower"
          style="
          left:{left}%;
          animation-duration:{duration}s;
