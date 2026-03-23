@@ -196,11 +196,11 @@ for i,(q,answer) in enumerate(questions):
 
     if st.session_state.step >= i:
 
-        st.markdown('<div class="block">', unsafe_allow_html=True)
+        st.markdown('<div class="block">', unsafe_allow_html=True)
 
-        st.subheader(f"{i+1}. {q}")
+        st.subheader(f"{i+1}. {q}")
 
-        user = st.text_input("Введите пароль", key=f"input{i}")
+        user = st.text_input("Введите пароль", key=f"input{i}")
 
         if st.button("Вперед", key=f"btn{i}"):
 
