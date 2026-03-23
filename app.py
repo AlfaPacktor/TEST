@@ -194,7 +194,7 @@ if "gift_opened" not in st.session_state:
 
 for i,(q,answer) in enumerate(questions):
 
-    if st.session_state.step >= i:
+    if st.session_state.step >= i:
 
         st.markdown('<div class="block">', unsafe_allow_html=True)
 
