@@ -204,7 +204,7 @@ for i,(q,answer) in enumerate(questions):
 
         if st.button("Вперед", key=f"btn{i}"):
 
-            if user.strip().lower() == answer.strip().lower():
+            if user.strip().lower() == answer.strip().lower():
 
                 st.success("Умничка!")
 
