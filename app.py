@@ -215,7 +215,7 @@ for i,(q,answer) in enumerate(questions):
             else:
                 st.error("Неверный пароль")
 
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # ------------------- Финальный блок -------------------
 if st.session_state.step == 7:
