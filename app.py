@@ -188,9 +188,9 @@ questions = [
 ]
 
 if "step" not in st.session_state:
-    st.session_state.step = 0
+    st.session_state.step = 0
 if "gift_opened" not in st.session_state:
-    st.session_state.gift_opened = False
+    st.session_state.gift_opened = False
 
 for i,(q,answer) in enumerate(questions):
 
