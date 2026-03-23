@@ -209,11 +209,11 @@ for i,(q,answer) in enumerate(questions):
                 st.success("Умничка!")
 
                 if st.session_state.step == i:
-                    st.session_state.step += 1
-                    st.rerun()
+                    st.session_state.step += 1
+                    st.rerun()
 
-            else:
-                st.error("Неверный пароль")
+            else:
+                st.error("Неверный пароль")
 
         st.markdown('</div>', unsafe_allow_html=True)
 
