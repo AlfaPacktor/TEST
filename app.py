@@ -158,9 +158,9 @@ st.markdown(hearts_html, unsafe_allow_html=True)
 # ------------------- Цветочки -------------------
 flowers_html = ""
 for i in range(10):
-    left = random.randint(0, 100)
-    duration = random.randint(10, 20)
-    delay = random.randint(0, 10)
+    left = random.randint(0, 100)
+    duration = random.randint(10, 20)
+    delay = random.randint(0, 10)
 
     flowers_html += f'''
     <div class="flower"
