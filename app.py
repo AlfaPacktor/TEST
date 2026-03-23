@@ -139,7 +139,7 @@ for i in range(20):
     delay = random.randint(0, 10)
     size = random.randint(16, 30)
 
-    hearts_html += f'''
+    hearts_html += f'''
     <div class="heart"
          style="
          left:{left}%;
