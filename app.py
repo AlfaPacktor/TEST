@@ -9,8 +9,8 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 
-html, body, [class*="css"]  {
-    font-family: 'Lobster', cursive;
+html, body, [class*="css"]  {
+    font-family: 'Lobster', cursive;
 }
 
 /* фон */
@@ -141,17 +141,14 @@ for i in range(20):
 
     hearts_html += f'''
     <div class="heart"
-         style="
-         left:{left}%;
-         font-size:{size}px;
-         animation-duration:{duration}s;
-         animation-delay:{delay}s;">
-         ❤️
-    </div>
-    '''
-
-st.markdown(hearts_html, unsafe_allow_html=True)
-
+         style="
+         left:{left}%;
+         font-size:{size}px;
+         animation-duration:{duration}s;
+         animation-delay:{delay}s;">
+         ❤️
+    </div>
+    '''
 
 st.markdown(hearts_html, unsafe_allow_html=True)
 
@@ -164,13 +161,13 @@ for i in range(10):
 
     flowers_html += f'''
     <div class="flower"
-         style="
-         left:{left}%;
-         animation-duration:{duration}s;
-         animation-delay:{delay}s;">
-         🌸
-    </div>
-    '''
+         style="
+         left:{left}%;
+         animation-duration:{duration}s;
+         animation-delay:{delay}s;">
+         🌸
+    </div>
+    '''
 
 st.markdown(flowers_html, unsafe_allow_html=True)
 
@@ -214,24 +211,24 @@ for i,(q,answer) in enumerate(questions):
 
             else:
                 st.error("Неверный пароль")
-                
-                    st.markdown('</div>', unsafe_allow_html=True)
+
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # ------------------- Финальный блок -------------------
 if st.session_state.step == 7:
 
-    st.markdown("<h2 style='text-align:center'>Ты прошла все испытания!</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align:center'>Ты прошла все испытания!</h2>", unsafe_allow_html=True)
 
-    if not st.session_state.get("gift_opened", False):
+    if not st.session_state.get("gift_opened", False):
 
-        if st.button("🎁🎁🎁 Открыть и забрать подарок 🎁🎁🎁"):
-            st.session_state.gift_opened = True
+        if st.button("🎁🎁🎁 Открыть и забрать подарок 🎁🎁🎁"):
+            st.session_state.gift_opened = True
 
-    if st.session_state.get("gift_opened", False):
-        st.balloons()
-        st.markdown("""
-        <div class="gift">
-        🎁 Поздравляю! Ты прошла квест! <br><br>
-        Твоя подсказка — <b>Комод CaRL</b> 🎉
-        </div>
-        """, unsafe_allow_html=True)
+    if st.session_state.get("gift_opened", False):
+        st.balloons()
+        st.markdown("""
+        <div class="gift">
+        🎁 Поздравляю! Ты прошла квест! <br><br>
+        Твоя подсказка — <b>Комод CaRL</b> 🎉
+        </div>
+        """, unsafe_allow_html=True)
