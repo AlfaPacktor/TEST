@@ -134,7 +134,7 @@ animation:pop 2s ease;
 # ------------------- Сердечки -------------------
 hearts_html = ""
 for i in range(20):
-    left = random.randint(0, 100)
+    left = random.randint(0, 100)
     duration = random.randint(8, 15)
     delay = random.randint(0, 10)
     size = random.randint(16, 30)
