@@ -206,7 +206,7 @@ for i,(q,answer) in enumerate(questions):
 
             if user.strip().lower() == answer.strip().lower():
 
-                st.success("Умничка!")
+                st.success("Умничка!")
 
                 if st.session_state.step == i:
                     st.session_state.step += 1
