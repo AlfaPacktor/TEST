@@ -202,7 +202,7 @@ for i,(q,answer) in enumerate(questions):
 
         user = st.text_input("Введите пароль", key=f"input{i}")
 
-        if st.button("Вперед", key=f"btn{i}"):
+        if st.button("Вперед", key=f"btn{i}"):
 
             if user.strip().lower() == answer.strip().lower():
 
